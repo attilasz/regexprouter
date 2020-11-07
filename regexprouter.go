@@ -1,20 +1,20 @@
 package regexprouter
 
 import (
-//	"log"
+	//	"log"
 	"net/http"
 	"regexp"
 	"strings"
-//	"reflect"
+	//	"reflect"
 )
 
 type (
-	PathParams map[string]string
+	PathParams     map[string]string
 	RequestHandler func(http.ResponseWriter, *http.Request, interface{})
-	RouterSub map[string]RequestHandler
-	RouterTop map[string]RouterSub
-	Router struct {
-		routes RouterTop
+	RouterSub      map[string]RequestHandler
+	RouterTop      map[string]RouterSub
+	Router         struct {
+		routes          RouterTop
 		notFoundHandler RequestHandler
 	}
 )
@@ -41,6 +41,10 @@ func (router *Router) PUT(path string, f RequestHandler) {
 	router.AddHandler(http.MethodPut, path, f)
 }
 
+func (router *Router) OPTIONS(path string, f RequestHandler) {
+	router.AddHandler(http.MethodDelete, path, f)
+}
+
 func (router *Router) DELETE(path string, f RequestHandler) {
 	router.AddHandler(http.MethodDelete, path, f)
 }
@@ -55,17 +59,17 @@ func (router *Router) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 	method := request.Method
 	path := request.URL.Path
 	handler := router.routes[method][path]
-//	log.Printf("got: %s\n", path)
+	//	log.Printf("got: %s\n", path)
 	setupCORS(writer)
 	if method == "OPTIONS" {
-		return;
+		return
 	}
 	if handler == nil {
 		for route := range router.routes[method] {
 			if strings.HasPrefix(route, ":") {
 				if regex, err := regexp.Compile(route[1:]); err == nil {
 					if match := regex.FindStringSubmatch(path); len(match) > 0 {
-//						log.Printf("path matched (%s): %s -> %s", regex, path, route)
+						//						log.Printf("path matched (%s): %s -> %s", regex, path, route)
 						ret := make(PathParams)
 						for i, name := range regex.SubexpNames() {
 							if i > 0 && name != "" && match[i] != "" {
