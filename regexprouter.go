@@ -60,7 +60,7 @@ func (router *Router) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 	path := request.URL.Path
 	handler := router.routes[method][path]
 	//	log.Printf("got: %s\n", path)
-	setupCORS(writer)
+//	setupCORS(writer)
 	if method == "OPTIONS" {
 		return
 	}
