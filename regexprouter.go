@@ -59,11 +59,11 @@ func (router *Router) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 	method := request.Method
 	path := request.URL.Path
 	handler := router.routes[method][path]
-	//	log.Printf("got: %s\n", path)
+//	log.Printf("got: %s\n", path)
 //	setupCORS(writer)
-	if method == "OPTIONS" {
-		return
-	}
+//	if method == "OPTIONS" {
+//		return
+//	}
 	if handler == nil {
 		for route := range router.routes[method] {
 			if strings.HasPrefix(route, ":") {
